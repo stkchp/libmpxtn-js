@@ -114,6 +114,12 @@ class libmpxtn {
 		return this.exports.mpxtn_get_loop(this.mpxtnobj);
 	}
 
+	mpxtn_vomit() {
+		if(this.mpxtnobj == 0) return null;
+		this.exports.mpxtn_vomit(this.buffertop, this.buffersize / 4, this.mpxtnobj);
+		return this.memory.buffer.slice(this.buffertop, this.buffertop + this.buffersize);
+	}
+
 	mpxtn_vomit_feeder() {
 		if(this.mpxtnobj == 0) return null;
 		const m = this.buffertop + this.buffersize / 2;
@@ -124,5 +130,39 @@ class libmpxtn {
 		];
 	}
 
+	dump_pcm() {
+		if(this.mpxtnobj == 0) return null;
+		this.mpxtn_reset();
+		this.mpxtn_set_loop(false);
+		const step = this.buffersize / 4;
+		const total = this.mpxtn_get_total_samples();
+		let buffer = new ArrayBuffer(44 + total * 4); // int16(2byte), stereo
+		// write header
+		let view = new DataView(buffer);
+		view.setUint32( 0, 0x52494646, false);    // RIFF
+		view.setUint32( 4, 36 + total * 4, true); // size
+		view.setUint32( 8, 0x57415645, false); // WAVE
+		view.setUint32(12, 0x666D7420, false); // fmt 
+		view.setUint32(16, 16, true);          // size
+		view.setUint16(20, 1, true);           // wFormatTag
+		view.setUint16(22, 2, true);           // nChannels
+		view.setUint32(24, 44100, true);       // nSamplePerSec
+		view.setUint32(28, 44100 * 4, true);   // nAvgBytePerSec
+		view.setUint16(32, 4, true);           // nBlockAlign
+		view.setUint16(34, 16, true);          // nBitPerSample
+		view.setUint32(36, 0x64617461, false); // DATA
+		view.setUint32(40, total * 4, true);   // size
+
+		// decode data
+		let dview = new Uint32Array(buffer);
+
+		for(let i = 0; i < total; i+=step) {
+			const sview = new Uint32Array(this.mpxtn_vomit());
+			for(let j = 0; j < step && (i + j) < total; ++j) {
+				dview[44 + i + j] = sview[j];
+			}
+		}
+		return buffer;
+	}
 };
 
