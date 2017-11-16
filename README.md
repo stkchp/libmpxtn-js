@@ -5,9 +5,9 @@
 
 ## 特徴
 
-[libmpxtn](/stkchp/libmpxtn)というC言語で書かれたpxtoneCollageのデコーダをWebAssemblyにコンパイルし、
+[libmpxtn](https://github.com/stkchp/libmpxtn)というC言語で書かれたpxtoneCollageのデコーダをWebAssemblyにコンパイルし、
 それを利用してWebページ上でデコード・再生を可能にしています。
-再生には現状[audio-feeder](/brion/audio-feeder)用の
+再生には現状[audio-feeder](https://github.com/brion/audio-feeder)用の
 Float32Arrayの出力をサポートしています。
 
 
@@ -28,7 +28,27 @@ TODO: 後日Github Pagesにつくりなおす
 
 ## 使い方
 
-`libmpxtn.min.js`と`libmpxtn.wasm`を
+`libmpxtn.min.js`と`libmpxtn.wasm`をサーバに配置して、HTMLに以下を加えます。
+
+```html
+<script src="libmpxtn.min.js"></script>
+```
+
+javascriptからlibmpxtnのインスタンスを作り出します。
+引数は順に`確保するメモリ`、`mpxtn_vomit系で使用するバッファサイズ`、`wasmのパス`です。
+
+```javascript
+let mpxtn = new libmpxtn(33554432, 4096, "libmpxtn.wasm");
+```
+
+あとはwasmをロードすれば各種のメソッドが使えるようになります。
+
+```javascript
+mpxtn.load_wasm().then(results => {
+	const total = mpxtn.mpxtn_get_total_samples();
+	...
+});
+```
 
 
 ## ライセンス
@@ -36,8 +56,8 @@ TODO: 後日Github Pagesにつくりなおす
 - Javascript
 - [MIT](LICENSE)
 
-ogg/vorbisのデコードは[libogg](/xiph/ogg)、[libvorbis](/xiph/vorbis)のソースを利用しています。
-また、ogg/vorbisで使用されているmathやsortのCライブラリは[musl libc](/jfbastien/musl)のソースを利用しています。
+ogg/vorbisのデコードは[libogg](https://github.com/xiph/ogg)、[libvorbis](https://github.com/xiph/vorbis)のソースを利用しています。
+また、ogg/vorbisで使用されているmathやsortのCライブラリは[musl libc](https://github.com/jfbastien/musl)のソースを利用しています。
 
 - libmpxtn.wasm
 	- libmpxtn  - [MIT](wasm/LICENSE.mpxtn)
