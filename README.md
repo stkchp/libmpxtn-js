@@ -60,7 +60,7 @@ ogg/vorbisのデコードは[libogg](https://github.com/xiph/ogg)、[libvorbis](
 また、ogg/vorbisで使用されているmathやsortのCライブラリは[musl libc](https://github.com/jfbastien/musl)のソースを利用しています。
 
 - libmpxtn.wasm
-	- libmpxtn  - [MIT](wasm/LICENSE.mpxtn)
-	- libogg    - [BSD](wasm/LICENSE.ogg)
-	- libvorbis - [BSD](wasm/LICENSE.vorbis)
-	- musl libc - [MIT](wasm/LICENSE.musl)
+	- libmpxtn  - [MIT](wasm/LICENSE.mpxtn.txt)
+	- libogg    - [BSD](wasm/LICENSE.ogg.txt)
+	- libvorbis - [BSD](wasm/LICENSE.vorbis.txt)
+	- musl libc - [MIT](wasm/LICENSE.musl.txt)
