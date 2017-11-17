@@ -9,3 +9,6 @@ $(TARGET): $(SRCS)
 
 clean:
 	rm -vf $(TARGET)
+
+zip:
+	zip release.zip $(TARGET) LICENSE wasm/*
